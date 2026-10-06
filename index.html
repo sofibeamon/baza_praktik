@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Практики для тела</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F3ECDC;
+  --fg: #2E2418;
+  --card: #FFFDF8;
+  --primary: #3A4F35;
+  --on-primary: #FFFFFF;
+  --secondary: #6B4F3A;
+  --muted: #E8DFC8;
+  --muted-fg: #6E6350;
+  --border: #DCD0B2;
+  --ring: #3A4F35;
+  --radius: 14px;
+  --font-head: "Lora", Georgia, serif;
+  --font-body: "Raleway", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121C15; --fg: #F1E9D8; --card: #1B2920; --primary: #7E9C74; --on-primary: #0F1712;
+    --secondary: #C29A74; --muted: #263528; --muted-fg: #C3B79E; --border: #384A3A; --ring: #9DB894;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121C15; --fg: #F1E9D8; --card: #1B2920; --primary: #7E9C74; --on-primary: #0F1712;
+  --secondary: #C29A74; --muted: #263528; --muted-fg: #C3B79E; --border: #384A3A; --ring: #9DB894;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+}
+.wrap { max-width: 560px; margin: 0 auto; padding: 20px 16px 40px; }
+h1, h2, h3 { font-family: var(--font-head); font-weight: 600; line-height: 1.25; margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Шапка */
+.eyebrow { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--secondary); font-weight: 600; }
+.title { font-size: 28px; margin-top: 4px; }
+.lead { color: var(--muted-fg); margin: 8px 0 0; }
+
+/* Фильтры */
+.group { margin-top: 24px; }
+.group h2 { font-size: 18px; margin-bottom: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-height: 44px; padding: 10px 16px; border-radius: 999px; cursor: pointer;
+  background: var(--card); border: 1px solid var(--border); color: var(--fg);
+  font-size: 15px; font-weight: 500; line-height: 1.2;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+.chip:hover { border-color: var(--primary); }
+.chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.chip.small { min-height: 44px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+
+/* Результаты */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 28px 0 12px; flex-wrap: wrap; }
+.count { font-weight: 600; color: var(--muted-fg); }
+.actions { display: flex; gap: 8px; }
+.ghost {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 12px;
+  border-radius: 10px; border: 0; background: transparent; color: var(--primary);
+  font-weight: 600; cursor: pointer; transition: background-color .2s ease;
+}
+.ghost:hover { background: var(--muted); }
+.ghost[hidden] { display: none; }
+.list { display: grid; gap: 10px; }
+.card {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; transition: border-color .2s ease, transform .2s ease;
+}
+.card:hover { border-color: var(--primary); }
+.card:active { transform: scale(.99); }
+.card h3 { font-size: 18px; }
+.meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; color: var(--muted-fg); font-size: 14px; }
+.meta .dot { opacity: .6; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tag { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--muted); color: var(--fg); }
+.empty { padding: 24px 16px; text-align: center; color: var(--muted-fg); background: var(--card); border: 1px dashed var(--border); border-radius: var(--radius); }
+
+/* Карточка практики */
+.back { margin-left: -8px; }
+.detail h1 { font-size: 26px; margin-top: 8px; }
+.detail .meta { font-size: 15px; margin-top: 8px; }
+.why { margin: 18px 0 0; font-size: 17px; }
+.section-title { font-size: 18px; margin: 26px 0 12px; }
+.steps { list-style: none; padding: 0; margin: 0; counter-reset: step; display: grid; gap: 12px; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; }
+.steps li::before {
+  content: counter(step); width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 600; font-size: 15px;
+  background: var(--muted); color: var(--primary);
+}
+.steps li span { padding-top: 4px; }
+.note { margin-top: 22px; padding: 14px 16px; border-radius: var(--radius); background: var(--muted); }
+.note p { margin: 0; }
+.note p + p { margin-top: 6px; }
+.cta { margin-top: 32px; padding: 18px 16px; border-radius: var(--radius); background: var(--card); border: 1px solid var(--border); }
+.cta p { margin: 0 0 12px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 20px;
+  border-radius: 12px; background: var(--primary); color: var(--on-primary); text-decoration: none;
+  font-weight: 600; cursor: pointer; border: 0; transition: opacity .2s ease;
+}
+.btn:hover { opacity: .9; }
+
+.view[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+</svg>
+
+<main class="wrap">
+  <section id="home" class="view">
+    <div class="eyebrow" id="subtitle"></div>
+    <h1 class="title" id="title"></h1>
+    <p class="lead" id="lead"></p>
+
+    <div class="group">
+      <h2>Что с тобой сейчас?</h2>
+      <div class="chips" id="states"></div>
+    </div>
+    <div class="group">
+      <h2>Где чувствуешь?</h2>
+      <div class="chips" id="zones"></div>
+    </div>
+    <div class="group">
+      <div class="chips" id="extras"></div>
+    </div>
+
+    <div class="bar">
+      <span class="count" id="count" aria-live="polite"></span>
+      <div class="actions">
+        <button class="ghost" id="reset" hidden><svg class="icon"><use href="#i-reset"/></svg>Сбросить</button>
+        <button class="ghost" id="random"><svg class="icon"><use href="#i-shuffle"/></svg>Наугад</button>
+      </div>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <section id="detail" class="view detail" hidden></section>
+</main>
+
+<script>
+const DATA = {"settings": {"title": "Практики для тела", "subtitle": "Клуб Телесных Практик", "lead": "Выбери, что с тобой сейчас или где напряжено, — и найдётся практика на несколько минут.", "cta": "Хочешь пройти это вместе, в группе и с музыкой? Приходи на встречу.", "button": "Узнать о встречах", "link": ""}, "practices": [{"id": "трясучка", "title": "Трясучка", "states": ["Напряжение", "Тревожно", "Злость"], "zones": ["Всё тело"], "time": "5–10 мин", "position": "стоя", "quick": false, "sit": false, "why": "Стряхнуть накопленное — чужие взгляды, дедлайны, мыслемешалку.", "steps": ["Встань, колени мягкие — не выпрямляй их до конца.", "Начни трясти кистями, как будто стряхиваешь воду с пальцев. Минута-две.", "Подключи плечи, потом голову.", "Пусти тряску по всему телу: от стоп вверх — в живот, грудь, плечи, голову. Грубо, интенсивно, без красоты.", "Постепенно замедляйся, пока не остановишься. Постой и послушай тело."], "notes": ["Хорошо идёт под музыку с ровным ритмом — барабаны, хаус."]}, {"id": "тяжёлый-танец", "title": "Тяжёлый танец", "states": ["Нет опоры", "Тревожно"], "zones": ["Всё тело"], "time": "5–15 мин", "position": "стоя", "quick": false, "sit": false, "why": "Почувствовать свой вес и опору, когда тебя «размазало» и ты вся в голове.", "steps": ["Включи медленную музыку с глубоким басом.", "Закрой глаза, почувствуй вес тела — как будто врастаешь в пол, как гора.", "Двигайся тяжело и медленно, с усилием — как в густой воде.", "Занимай пространство широкими шагами."], "notes": []}, {"id": "дыхание-волна", "title": "Дыхание-волна", "states": ["Тревожно", "Перегруз", "Грусть"], "zones": ["Дыхание", "Всё тело"], "time": "3 мин", "position": "сидя, стоя или лёжа", "quick": true, "sit": true, "why": "", "steps": ["Устройся удобно — сидя, стоя или лёжа.", "На вдохе представь, что воздух поднимается от стоп к макушке.", "На выдохе он опускается обратно вниз и смывает напряжение.", "Повтори 5–10 раз в своём темпе."], "notes": []}, {"id": "тающее-мороженое", "title": "Тающее мороженое", "states": ["Перегруз", "Напряжение"], "zones": ["Всё тело"], "time": "3–5 мин", "position": "стоя, потом на полу", "quick": true, "sit": false, "why": "Переключиться из «надо» в «чувствую».", "steps": ["Встань. Представь над головой тёплое солнце.", "Почувствуй, как тепло ложится на макушку, плечи, спину.", "Начни медленно таять вниз — голова, плечи, спина, колени.", "Не падай: позволь гравитации делать работу, пока не окажешься на полу.", "Полежи так, как получилось."], "notes": ["Нужно немного свободного места на полу."]}, {"id": "исследование-опоры", "title": "Исследование опоры", "states": ["Нет опоры", "Тревожно"], "zones": ["Всё тело"], "time": "5 мин", "position": "стоя, потом на полу", "quick": true, "sit": false, "why": "Вернуть ощущение «меня держат». Задача не размяться, а почувствовать опору.", "steps": ["Встань, лучше босиком.", "Медленно перекатывайся с ноги на ногу, потом вперёд-назад — с пяток на носки.", "Подойди к стене. Обопрись на неё руками, спиной, плечом, бедром — разными частями тела.", "Опустись на пол и поищи опору там."], "notes": []}, {"id": "тяжесть-как-опора", "title": "Тяжесть как опора", "states": ["Грусть", "Нет опоры"], "zones": ["Всё тело"], "time": "3–5 мин", "position": "стоя", "quick": true, "sit": false, "why": "Когда тяжело — не бороться с тяжестью, а опереться на неё. Тяжесть — не «плохое», а реальное ощущение в теле.", "steps": ["Встань, почувствуй вес тела.", "Разреши коленям смягчиться, плечам опуститься.", "Медленно переноси вес с ноги на ногу, как маятник.", "Побудь так, сколько хочется."], "notes": []}, {"id": "одна-часть-всё-тело", "title": "Одна часть — всё тело", "states": ["Вялость", "Почувствовать себя"], "zones": ["Всё тело"], "time": "3–5 мин", "position": "стоя или сидя", "quick": true, "sit": true, "why": "", "steps": ["Спроси себя: какая часть тела сейчас хочет двигаться?", "Минуту-две двигай только ей.", "Потом разреши остальному телу мягко откликаться — не копировать, а отвечать."], "notes": []}, {"id": "высоко-средне-низко", "title": "Высоко — средне — низко", "states": ["Вялость"], "zones": ["Всё тело"], "time": "3–5 мин", "position": "стоя", "quick": true, "sit": false, "why": "", "steps": ["Найди три уровня. Высоко — на полупальцах, руки вверх. Средне — обычная стойка. Низко — полуприсед, руки вниз.", "Плавно перетекай между ними.", "Задерживайся на любом, сколько хочется.", "Добавляй вращение или тряску."], "notes": []}, {"id": "движение-метафора", "title": "Движение-метафора", "states": ["Почувствовать себя", "Грусть"], "zones": ["Всё тело"], "time": "10 мин", "position": "стоя", "quick": false, "sit": false, "why": "", "steps": ["Включи спокойную музыку.", "Перо — найди в теле лёгкость.", "Камень — тяжесть.", "Река — текучесть.", "Огонь — импульсивность.", "На каждый образ минута-две. Не «станцуй» его, а позволь телу найти форму этого качества."], "notes": []}, {"id": "слово-становится-жестом", "title": "Слово становится жестом", "states": ["Почувствовать себя", "Злость", "Грусть"], "zones": ["Всё тело"], "time": "5–10 мин", "position": "стоя или сидя", "quick": false, "sit": true, "why": "Когда внутри что-то есть, а назвать трудно, — дать этому форму через движение.", "steps": ["Выбери слово, которое откликается сейчас: «раздражение», «усталость», «тоска» — любое.", "30–60 секунд просто побудь с ним в тишине.", "Начни с микродвижения — палец, кисть, бровь.", "Дай движению постепенно вырасти, пока оно не захватит всё тело.", "В конце назови одно слово: что теперь?"], "notes": []}, {"id": "животные", "title": "Животные", "states": ["Почувствовать себя", "Вялость"], "zones": ["Всё тело"], "time": "10–15 мин", "position": "стоя", "quick": false, "sit": false, "why": "", "steps": ["Выбери животное, которое сейчас откликается.", "Найди его пластику: как оно двигается, дышит, в каком ритме живёт.", "Можно со звуками.", "Не изображай, а почувствуй, какая эмоция живёт в этом теле."], "notes": []}, {"id": "рисуем-в-пространстве", "title": "Рисуем в пространстве", "states": ["Вялость", "Напряжение"], "zones": ["Шея и плечи"], "time": "2–3 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "", "steps": ["Нарисуй кистью в воздухе круг. Потом восьмёрку, спираль.", "Постепенно пусть движение ведёт вся рука — от плеча.", "Поменяй руку.", "Не рисуй правильно — рисуй так, будто никто не видит."], "notes": []}, {"id": "внутренний-камертон", "title": "Внутренний камертон", "states": ["Тревожно", "Перегруз"], "zones": ["Грудь и между лопаток", "Лицо, челюсть, горло"], "time": "3 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "", "steps": ["Рот закрыт, зубы не сжаты, язык расслаблен.", "Положи ладони на грудь.", "Вдох носом.", "На выдохе — закрытое «м-м-м-м». Гудим, не поём.", "Почувствуй ладонями, как вибрируют рёбра.", "Повтори 5–10 раз. Можно попробовать «в-в-в» и «з-з-з»."], "notes": ["Нужна возможность негромко погудеть."]}, {"id": "объятия-бабочки", "title": "Объятия бабочки", "states": ["Тревожно", "Перегруз"], "zones": ["Грудь и между лопаток"], "time": "1–3 мин", "position": "сидя или лёжа", "quick": true, "sit": true, "why": "Ритмичное постукивание по очереди слева и справа многим помогает успокоиться. Приём пришёл из EMDR-терапии.", "steps": ["Скрести руки на груди: правая ладонь на левом плече, левая — на правом.", "Мягко постукивай по плечам по очереди, ритмично, как маятник.", "Дыши спокойно.", "Продолжай, пока не почувствуешь, что хватит."], "notes": []}, {"id": "потягивание-грудной-клетки", "title": "Потягивание грудной клетки", "states": ["Напряжение"], "zones": ["Грудь и между лопаток"], "time": "2–3 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "", "steps": ["Вытяни руки вперёд, а грудную клетку отведи назад — растягивается спина между лопатками.", "Теперь наоборот: грудная клетка вперёд, руки уходят назад — раскрывается грудь.", "Чередуй медленно, вместе с дыханием."], "notes": ["Хорошо идёт в паре с практикой «Разминание под ключицей»."]}, {"id": "разминание-под-ключицей", "title": "Разминание под ключицей", "states": ["Напряжение"], "zones": ["Грудь и между лопаток", "Шея и плечи"], "time": "2–3 мин", "position": "сидя", "quick": true, "sit": true, "why": "Зажатая мышца под ключицей тянет плечо вперёд и закрывает грудь. Многие замечают, что здесь копится то, что не удалось прожить.", "steps": ["Найди пальцами зону под ключицей, ближе к плечу.", "Разминай её пальцами.", "На болезненных точках задерживайся и дыши в них.", "Поменяй сторону."], "notes": ["Больно — не значит «надо терпеть». Нажимай так, чтобы было терпимо."]}, {"id": "танец-капли", "title": "Танец капли", "states": ["Грусть"], "zones": ["Грудь и между лопаток", "Живот"], "time": "5–10 мин", "position": "стоя или сидя", "quick": false, "sit": true, "why": "", "steps": ["Представь, что в теле есть капля грусти. Где она — в груди, в горле, в животе?", "Позволь телу двигаться из этого места.", "Медленно, плавно, с паузами.", "Если хочется свернуться — свернись."], "notes": ["Лучше без грустной музыки: тишина или звуки природы."]}, {"id": "встреча-с-животом", "title": "Встреча с животом", "states": ["Тревожно", "Почувствовать себя"], "zones": ["Живот"], "time": "5 мин", "position": "лёжа", "quick": true, "sit": false, "why": "", "steps": ["Ляг, положи руки на живот.", "Сначала просто тепло ладоней, без нажима.", "Потом лёгкий нажим и круговые движения по часовой стрелке.", "Очень мягко надави на солнечное сплетение — под грудиной.", "Снова несколько кругов по животу."], "notes": ["Задача не «проработать», а встретиться — побыть в контакте."]}, {"id": "контейнер-для-энергии", "title": "Контейнер для энергии", "states": ["Злость", "Перегруз"], "zones": ["Живот"], "time": "1–2 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "После сильной эмоции или активной практики собрать себя обратно, не оставаться в разбросе.", "steps": ["Обними себя.", "Положи руки на живот.", "Медленно сделай круг плечами.", "Побудь так несколько вдохов."], "notes": ["Хорошо идёт после «Трясучки», «Рычания» и «Архива запретных жестов»."]}, {"id": "лицо-маска", "title": "Лицо-маска", "states": ["Напряжение", "Злость"], "zones": ["Лицо, челюсть, горло"], "time": "1 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "Снять с лица привычный контроль — то самое «держать лицо».", "steps": ["30 секунд корчи рожицы.", "Высунь язык, покажи зубы, сморщи нос.", "Расслабь лицо и заметь разницу."], "notes": []}, {"id": "восьмёрки-тазом", "title": "Восьмёрки тазом", "states": ["Вялость", "Почувствовать себя"], "zones": ["Таз и поясница"], "time": "2–3 мин", "position": "стоя или лёжа", "quick": true, "sit": false, "why": "", "steps": ["Встань, колени мягкие. Или ляг на спину.", "Рисуй тазом небольшие горизонтальные восьмёрки.", "Образ: разматываешь узлы в крестце.", "Поменяй направление."], "notes": []}, {"id": "качели-тазом-лёжа", "title": "Качели тазом лёжа", "states": ["Напряжение", "Почувствовать себя"], "zones": ["Таз и поясница"], "time": "5 мин", "position": "лёжа", "quick": true, "sit": false, "why": "", "steps": ["Ляг на спину.", "Покачай бёдрами вправо-влево, с очень маленькой амплитудой.", "Потом вперёд-назад — «песочные часы».", "Потом круги тазом в одну и в другую сторону.", "Всё медленно, амплитуда небольшая."], "notes": []}, {"id": "бабочка-лёжа", "title": "Бабочка лёжа", "states": ["Перегруз", "Напряжение"], "zones": ["Таз и поясница"], "time": "3–5 мин", "position": "лёжа", "quick": true, "sit": false, "why": "", "steps": ["Ляг на спину, соедини стопы, колени разведи в стороны.", "Подтяни стопы к себе.", "Побудь в позе без усилия.", "Затем соедини колени и подтяни их к животу — расслабь поясницу."], "notes": []}, {"id": "тепло-в-низ-живота", "title": "Тепло в низ живота", "states": ["Почувствовать себя", "Перегруз"], "zones": ["Таз и поясница", "Живот"], "time": "3–5 мин", "position": "лёжа", "quick": true, "sit": false, "why": "", "steps": ["Ляг, положи руки на низ живота.", "Посылай туда тепло ладоней.", "Мысленно — внимание и любовь.", "Без движения и без задачи что-то изменить."], "notes": []}, {"id": "рычание-с-вибрацией", "title": "Рычание с вибрацией", "states": ["Злость"], "zones": ["Лицо, челюсть, горло"], "time": "1–2 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "", "steps": ["Опусти и расслабь челюсть.", "Низко порычи: «р-р-р».", "Пусть челюсть при этом дрожит — специально.", "После стряхни руки и сделай пару глубоких вдохов."], "notes": ["Нужна возможность звучать. Если нельзя — попробуй «Застывший крик»."]}, {"id": "застывший-крик", "title": "Застывший крик", "states": ["Злость"], "zones": ["Лицо, челюсть, горло", "Всё тело"], "time": "1–2 мин", "position": "стоя", "quick": true, "sit": false, "why": "", "steps": ["Открой рот, как в крике, но без звука.", "Подключи руки, потом всё тело.", "Пусть движение договаривает то, что не выходит голосом.", "Потом выдохни и стряхни руки."], "notes": ["Подходит, когда звучать нельзя — соседи, офис, стеснение."]}, {"id": "архив-запретных-жестов", "title": "Архив запретных жестов", "states": ["Злость"], "zones": ["Всё тело"], "time": "5 мин", "position": "стоя", "quick": true, "sit": false, "why": "", "steps": ["Вспомни жест, который ты обычно сдерживаешь: оскал, сжатые кулаки, желание топнуть или рыкнуть.", "Сделай его — для себя, никто не смотрит.", "После каждого раза — пауза: глубокий вдох, стряхни руки.", "Повтори 2–3 раза."], "notes": ["Злость направлена в пространство, не в кого-то.", "После — «Контейнер для энергии»."]}, {"id": "толкаем-пространство", "title": "Толкаем пространство", "states": ["Злость", "Нет опоры"], "zones": ["Всё тело", "Шея и плечи"], "time": "3 мин", "position": "стоя", "quick": true, "sit": false, "why": "Почувствовать, где заканчиваешься ты и начинается пространство.", "steps": ["Встань, ноги на ширине плеч, колени мягкие.", "Вытяни руки вперёд на уровень груди, ладони «в стену».", "Медленно толкай воображаемую стену — вперёд, в стороны, вверх. По 30–40 секунд в каждую сторону.", "Чем сильнее давишь, тем лучше чувствуешь свои руки."], "notes": []}, {"id": "топот", "title": "Топот", "states": ["Нет опоры", "Злость"], "zones": ["Всё тело"], "time": "3 мин", "position": "стоя", "quick": true, "sit": false, "why": "", "steps": ["Перенеси вес на правую ногу, почувствуй, как стопа вдавливается в пол. Потом на левую.", "Начни тихо топать на месте — не танцевально, а как будто проверяешь, твёрдый ли пол.", "Постепенно усиливай, потом снова затихай.", "Ты здесь. У тебя есть вес."], "notes": []}, {"id": "звуковой-выдох", "title": "Звуковой выдох", "states": ["Перегруз", "Напряжение", "Злость"], "zones": ["Дыхание"], "time": "3–5 мин", "position": "стоя", "quick": true, "sit": false, "why": "", "steps": ["Вдох через нос — руки поднимаются.", "На резком выдохе руки вниз к полу, колени пружинят, звук «Ха!» уходит в пол.", "Повтори несколько раз.", "Потом пару минут свободного выдоха со звуком — «хо-о-о», стон, вздох."], "notes": ["Нужна возможность звучать."]}, {"id": "удлинённый-выдох", "title": "Удлинённый выдох", "states": ["Тревожно", "Перегруз"], "zones": ["Дыхание"], "time": "2–3 мин", "position": "сидя или лёжа", "quick": true, "sit": true, "why": "", "steps": ["Вдох носом.", "Выдох через рот — медленно, дольше, чем вдох.", "Повтори несколько раз в своём темпе."], "notes": []}, {"id": "дыхание-4-7-8", "title": "Дыхание 4-7-8", "states": ["Тревожно", "Перегруз"], "zones": ["Дыхание"], "time": "2 мин", "position": "сидя или лёжа", "quick": true, "sit": true, "why": "", "steps": ["Вдох носом на 4 счёта.", "Задержи дыхание на 7.", "Выдох через рот на 8.", "Повтори 4 раза."], "notes": ["Если задержка даётся тяжело — сократи счёт, пропорция важнее цифр."]}, {"id": "простукивание-грудины", "title": "Простукивание грудины", "states": ["Тревожно", "Вялость"], "zones": ["Дыхание", "Грудь и между лопаток"], "time": "2 мин", "position": "сидя или стоя", "quick": true, "sit": true, "why": "", "steps": ["Положи одну руку на грудь, другую на живот. Подыши, чтобы двигались обе.", "Кончиками пальцев мягко простукивай грудину — сверху вниз и обратно.", "Продолжай дышать спокойно."], "notes": []}, {"id": "шея-самомассаж-и-медленные-движения", "title": "Шея: самомассаж и медленные движения", "states": ["Напряжение"], "zones": ["Шея и плечи"], "time": "5 мин", "position": "сидя", "quick": true, "sit": true, "why": "", "steps": ["Медленно, без рывков, повращай головой — в своём темпе, сколько комфортно.", "Пальцами разомни мышцы вдоль шеи.", "Пройдись по основанию черепа и верху плеч."], "notes": ["Если больно — не терпи, уменьши амплитуду или нажим."]}, {"id": "прогрессивная-мышечная-релаксация", "title": "Прогрессивная мышечная релаксация", "states": ["Напряжение", "Перегруз"], "zones": ["Всё тело"], "time": "10 мин", "position": "сидя или лёжа", "quick": false, "sit": true, "why": "Через сильное напряжение лучше почувствовать, как ощущается расслабление.", "steps": ["Сожми кисти в кулаки, напряги руки. Держи 5 секунд — и отпусти. Побудь 10–15 секунд, замечая разницу.", "Так же — плечи: подними их к ушам, держи, отпусти.", "Лицо: зажмурься, сожми челюсть, держи, отпусти.", "Живот: напряги, держи, отпусти.", "Ноги и стопы: напряги, держи, отпусти.", "В конце побудь в расслаблении минуту."], "notes": []}, {"id": "якорь-в-теле", "title": "Якорь в теле", "states": ["Грусть", "Тревожно", "Нет опоры"], "zones": ["Всё тело"], "time": "1–2 мин", "position": "сидя, стоя или лёжа", "quick": true, "sit": true, "why": "", "steps": ["Найди в теле место, которое чувствует себя чуть устойчивее: стопа, ладонь, спина у стены.", "Положи туда руку.", "Сделай три медленных вдоха.", "Можно добавить фразу: «Я разрешаю себе это чувствовать — и я остаюсь с собой»."], "notes": []}]};
+
+const STATE_LABELS = {
+  "Тревожно": "Тревожно",
+  "Напряжение": "Напряжение, зажатость",
+  "Перегруз": "Перегруз, хочу выдохнуть",
+  "Вялость": "Вялость, хочу взбодриться",
+  "Злость": "Злюсь, раздражаюсь",
+  "Грусть": "Грустно, тяжело",
+  "Нет опоры": "Рассеянность, нет опоры",
+  "Почувствовать себя": "Хочу почувствовать себя"
+};
+const ZONES = ["Глаза и голова", "Лицо, челюсть, горло", "Шея и плечи", "Грудь и между лопаток", "Дыхание", "Живот", "Таз и поясница", "Всё тело"];
+const EXTRAS = [
+  { key: "quick", label: "До 5 минут", test: p => p.quick },
+  { key: "sit", label: "Можно сидя", test: p => p.sit }
+];
+
+// Скрипт Телеграма есть и в обычном браузере — там platform = "unknown", считаем, что Телеграма нет
+const tg = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.platform !== "unknown" ? window.Telegram.WebApp : null;
+const practices = DATA.practices;
+const filter = { state: null, zone: null, quick: false, sit: false };
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const haptic = () => { try { tg && tg.HapticFeedback.selectionChanged(); } catch (e) {} };
+
+function setupTelegram() {
+  if (!tg) return;
+  try {
+    tg.ready(); tg.expand();
+    document.documentElement.dataset.theme = tg.colorScheme === "dark" ? "dark" : "light";
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+    tg.setHeaderColor(bg); tg.setBackgroundColor(bg);
+    tg.BackButton.onClick(goHome);
+  } catch (e) {}
+}
+
+function chip(label, pressed, onClick, extraClass) {
+  const b = document.createElement("button");
+  b.className = "chip" + (extraClass ? " " + extraClass : "");
+  b.type = "button";
+  b.textContent = label;
+  b.setAttribute("aria-pressed", pressed ? "true" : "false");
+  b.addEventListener("click", () => { haptic(); onClick(); });
+  return b;
+}
+
+function renderFilters() {
+  const usedStates = Object.keys(STATE_LABELS).filter(s => practices.some(p => p.states.includes(s)));
+  const usedZones = ZONES.filter(z => practices.some(p => p.zones.includes(z)));
+  const st = $("states"); st.innerHTML = "";
+  usedStates.forEach(s => st.appendChild(chip(STATE_LABELS[s], filter.state === s, () => { filter.state = filter.state === s ? null : s; update(); })));
+  const zn = $("zones"); zn.innerHTML = "";
+  usedZones.forEach(z => zn.appendChild(chip(z, filter.zone === z, () => { filter.zone = filter.zone === z ? null : z; update(); })));
+  const ex = $("extras"); ex.innerHTML = "";
+  EXTRAS.forEach(x => ex.appendChild(chip(x.label, filter[x.key], () => { filter[x.key] = !filter[x.key]; update(); }, "small")));
+}
+
+function matches(p) {
+  if (filter.state && !p.states.includes(filter.state)) return false;
+  if (filter.zone && !p.zones.includes(filter.zone)) return false;
+  return EXTRAS.every(x => !filter[x.key] || x.test(p));
+}
+
+function plural(n) {
+  const a = n % 10, b = n % 100;
+  if (a === 1 && b !== 11) return "практика";
+  if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return "практики";
+  return "практик";
+}
+
+function metaHtml(p) {
+  return `<div class="meta"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>${esc(p.time)}</span><span class="dot">·</span><span>${esc(p.position)}</span></div>`;
+}
+
+function renderList() {
+  const items = practices.filter(matches);
+  const active = filter.state || filter.zone || filter.quick || filter.sit;
+  $("count").textContent = `${items.length} ${plural(items.length)}`;
+  $("reset").hidden = !active;
+  $("random").dataset.pool = items.map(p => p.id).join(",");
+  const list = $("list");
+  if (!items.length) {
+    list.innerHTML = `<div class="empty">Под такое сочетание практики пока нет. Попробуй убрать один из фильтров.</div>`;
+    return;
+  }
+  list.innerHTML = items.map(p => `
+    <button class="card" type="button" data-id="${esc(p.id)}">
+      <h3>${esc(p.title)}</h3>
+      ${metaHtml(p)}
+      <div class="tags">${p.zones.map(z => `<span class="tag">${esc(z)}</span>`).join("")}</div>
+    </button>`).join("");
+}
+
+function update() { renderFilters(); renderList(); }
+
+function renderDetail(p) {
+  const d = $("detail");
+  const s = DATA.settings;
+  d.innerHTML = `
+    <button class="ghost back" type="button" id="backBtn"><svg class="icon"><use href="#i-back"/></svg>Все практики</button>
+    <h1>${esc(p.title)}</h1>
+    ${metaHtml(p)}
+    <div class="tags">${p.states.map(x => `<span class="tag">${esc(STATE_LABELS[x] || x)}</span>`).join("")}</div>
+    ${p.why ? `<p class="why">${esc(p.why)}</p>` : ""}
+    ${p.steps.length ? `<h2 class="section-title">Как делать</h2><ol class="steps">${p.steps.map(x => `<li><span>${esc(x)}</span></li>`).join("")}</ol>` : ""}
+    ${p.notes.length ? `<div class="note">${p.notes.map(x => `<p>${esc(x)}</p>`).join("")}</div>` : ""}
+    ${s.link ? `<div class="cta"><p>${esc(s.cta)}</p><a class="btn" href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.button)}</a></div>` : ""}
+  `;
+  $("backBtn").addEventListener("click", goHome);
+  const link = d.querySelector(".cta a");
+  if (link && tg) link.addEventListener("click", e => {
+    try { e.preventDefault(); /^https:\/\/t\.me\//.test(s.link) ? tg.openTelegramLink(s.link) : tg.openLink(s.link); } catch (err) { location.href = s.link; }
+  });
+}
+
+// Адрес #p=… нужен, чтобы работала кнопка «назад» и можно было дать ссылку на практику.
+// Где история недоступна (локальный предпросмотр), просто переключаем экраны.
+let homeScroll = 0;
+
+function idFromHash() {
+  return location.hash.startsWith("#p=") ? decodeURIComponent(location.hash.slice(3)) : null;
+}
+
+function show(id) {
+  const p = id && practices.find(x => x.id === id);
+  if (p && $("detail").hidden) homeScroll = window.scrollY;
+  $("home").hidden = !!p;
+  $("detail").hidden = !p;
+  if (p) { renderDetail(p); window.scrollTo(0, 0); } else { window.scrollTo(0, homeScroll); }
+  try { if (tg) p ? tg.BackButton.show() : tg.BackButton.hide(); } catch (e) {}
+}
+
+function openPractice(id) {
+  try { history.pushState({ p: id }, "", "#p=" + encodeURIComponent(id)); } catch (e) {}
+  show(id);
+}
+
+function goHome() {
+  if (history.state && history.state.p) { history.back(); return; }
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  show(null);
+}
+
+function route() { show(idFromHash()); }
+
+$("list").addEventListener("click", e => { const c = e.target.closest(".card"); if (c) openPractice(c.dataset.id); });
+$("reset").addEventListener("click", () => { Object.assign(filter, { state: null, zone: null, quick: false, sit: false }); update(); });
+$("random").addEventListener("click", () => {
+  const pool = ($("random").dataset.pool || "").split(",").filter(Boolean);
+  const ids = pool.length ? pool : practices.map(p => p.id);
+  haptic(); openPractice(ids[Math.floor(Math.random() * ids.length)]);
+});
+window.addEventListener("popstate", route);
+
+document.title = DATA.settings.title;
+$("title").textContent = DATA.settings.title;
+$("subtitle").textContent = DATA.settings.subtitle;
+$("lead").textContent = DATA.settings.lead;
+setupTelegram();
+update();
+route();
+</script>
+</body>
+</html>
